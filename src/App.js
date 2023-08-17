@@ -7,8 +7,21 @@ const socket = io.connect("https://chat-aap-backend.onrender.com");
 
 function App() {
   const [username, setUsername] = useState();
-  const [room, setRoom] = useState();
+  const [room, setRoom] = useState("");
   const [showChat, setShowChat] = useState(false);
+  const RANDOM_ID_LENGTH = 8;
+
+  const generateRandomId = () => {
+    const STR =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let ID = "";
+    for (let i = 0; i < RANDOM_ID_LENGTH; i++) {
+      ID += STR.charAt(Math.floor(Math.random() * STR.length));
+    }
+    navigator.clipboard.writeText(ID);
+    setRoom(ID);
+    alert("ID copied to clipboard!!");
+  };
 
   const joinRoom = () => {
     if (username !== "" && room !== "") {
@@ -28,14 +41,16 @@ function App() {
           <h3>Join a chat</h3>
           <input
             type="text"
-            placeholder="Hehe...."
+            placeholder="Name...."
             onChange={handleValueChange(setUsername)}
           />
           <input
             type="text"
-            placeholder="Room ID...."
+            placeholder="Add room id or generate"
+            value={room}
             onChange={handleValueChange(setRoom)}
           />
+          <button onClick={generateRandomId}>Generate Random ID</button>
           <button onClick={joinRoom}>Join A Room</button>
         </div>
       )}

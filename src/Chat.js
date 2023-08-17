@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 const Chat = ({ socket, username, room }) => {
-  const [currentMessage, setCurrentMessage] = useState();
+  const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
-  const messsageRef = useRef();
 
   useEffect(() => {
     socket.on("message_received", (messageData) => {
@@ -25,7 +24,7 @@ const Chat = ({ socket, username, room }) => {
       };
       await socket.emit("send_message", messageData);
       setMessageList((prevMessages) => [...prevMessages, messageData]);
-      messsageRef.current.value = "";
+      setCurrentMessage("");
     }
   };
   return (
@@ -37,6 +36,7 @@ const Chat = ({ socket, username, room }) => {
         <ScrollToBottom className="message-container">
           {messageList.map((messageData) => (
             <div
+              key={messageData}
               className="message"
               id={username === messageData.author ? "you" : "other"}
             >
@@ -57,7 +57,7 @@ const Chat = ({ socket, username, room }) => {
         <input
           type="text"
           className="text"
-          ref={messsageRef}
+          value={currentMessage}
           placeholder="Hey...."
           onChange={(event) => setCurrentMessage(event.target.value)}
           onKeyUp={(event) => {
